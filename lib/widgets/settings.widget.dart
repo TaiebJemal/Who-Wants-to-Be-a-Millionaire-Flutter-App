@@ -12,8 +12,8 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool isDarkMode = false;
-  bool soundEnabled = true;
-  bool vibrationEnabled = true;
+  bool soundEnabled = false; // Default off
+  bool vibrationEnabled = false; // Default off
   String selectedLanguage = 'English';
   int numberOfQuestions = 10;
   String selectedCategory = 'General Knowledge';
@@ -35,16 +35,21 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   void _updateFinalUrl() {
     final url = QuizService.buildApiUrl(
       amount: numberOfQuestions,
-      category: QuizService.categories[selectedCategory],
+      category: QuizService.categories.entries
+          .firstWhere((entry) => entry.key == selectedCategory, orElse: () => const MapEntry('Any Category', 0))
+          .value,
+
       difficulty: selectedDifficulty,
     );
-    QuizService.finalQuizUrl = url; // Share the final URL globally
+    QuizService.finalQuizUrl = url;
+    QuizService.soundEnabled = soundEnabled;
+    QuizService.vibrationEnabled = vibrationEnabled;
   }
 
   @override
   void initState() {
     super.initState();
-    _updateFinalUrl(); // Initial setup
+    _updateFinalUrl();
   }
 
   @override
@@ -66,12 +71,18 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             SwitchListTile(
               title: const Text('Sound Effects'),
               value: soundEnabled,
-              onChanged: (value) => setState(() => soundEnabled = value),
+              onChanged: (value) {
+                setState(() => soundEnabled = value);
+                _updateFinalUrl();
+              },
             ),
             SwitchListTile(
               title: const Text('Vibration'),
               value: vibrationEnabled,
-              onChanged: (value) => setState(() => vibrationEnabled = value),
+              onChanged: (value) {
+                setState(() => vibrationEnabled = value);
+                _updateFinalUrl();
+              },
             ),
             DropdownButtonFormField<String>(
               value: selectedLanguage,

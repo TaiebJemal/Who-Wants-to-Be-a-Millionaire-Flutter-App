@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wwbm/services/quiz_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:vibration/vibration.dart';
 
 class QuestionPage extends StatefulWidget {
   const QuestionPage({super.key});
@@ -23,6 +25,8 @@ class _QuestionPageState extends State<QuestionPage> {
 
   List<String> prizeLevels = [];
 
+  final player = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +35,11 @@ class _QuestionPageState extends State<QuestionPage> {
 
   Future<void> fetchQuestions() async {
     try {
-      final response = await http.get(Uri.parse(QuizService.finalQuizUrl));
+      final url = QuizService.finalQuizUrl.isEmpty
+          ? 'https://opentdb.com/api.php?amount=8&difficulty=easy'
+          : QuizService.finalQuizUrl;
+
+      final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
       setState(() {
         questions = data['results'];
@@ -53,7 +61,18 @@ class _QuestionPageState extends State<QuestionPage> {
     }
   }
 
+  void vibrate() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: 50);
+    }
+  }
+
+  Future<void> playSound(String fileName) async {
+    await player.play(AssetSource(fileName));
+  }
+
   void useLifeline(String type) {
+    vibrate();
     setState(() {
       if (type == 'lifeline') lifelineUsed = true;
       if (type == 'view') viewUsed = true;
@@ -67,12 +86,14 @@ class _QuestionPageState extends State<QuestionPage> {
   void checkAnswer(String selectedAnswer) {
     if (questionAnswered || gameOver) return;
 
+    vibrate();
     final correctAnswer = questions[currentIndex]['correct_answer'];
 
     setState(() {
       questionAnswered = true;
 
       if (selectedAnswer == correctAnswer) {
+        playSound('correct.mp3');
         if (currentIndex < questions.length - 1) {
           currentIndex++;
           questionAnswered = false;
@@ -80,6 +101,7 @@ class _QuestionPageState extends State<QuestionPage> {
           prizeMessage = 'Congratulations! You won \$1 000 000!';
         }
       } else {
+        playSound('wrong.mp3');
         gameOver = true;
         prizeMessage = 'Game Over! You won ${prizeLevels[prizeLevels.length - 1 - currentIndex]}';
       }
@@ -100,18 +122,16 @@ class _QuestionPageState extends State<QuestionPage> {
       body: questions.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-        padding: const EdgeInsets.only(top: 20.0), // add some top padding under app bar
+        padding: const EdgeInsets.only(top: 20.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,  // align to top
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Question + Answers on left
             Expanded(
               flex: 2,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
@@ -139,41 +159,45 @@ class _QuestionPageState extends State<QuestionPage> {
                 ),
               ),
             ),
-            // Prize ladder on right
-            Container(
-              width: 130,
-              height: 500,
-              color: Colors.blue[900],
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                reverse: true,
-                itemCount: levelsCount,
-                itemBuilder: (context, index) {
-                  final prizeText = prizeLevels[index];
-                  final isActive = levelsCount - 1 - index == currentIndex;
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: isActive ? Colors.amber[700] : Colors.blue[800],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: isActive ? Colors.black : Colors.transparent, width: 1.5),
-                    ),
-                    child: Text(
-                      '${levelsCount - index}. $prizeText',
-                      style: TextStyle(
-                        color: isActive ? Colors.black : Colors.white,
-                        fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
-                  );
-                },
+            // Score Ladder
+            Expanded(
+              child: SizedBox(
+                height: double.infinity,
+                child: Center(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    reverse: true,
+                    itemCount: levelsCount,
+                    itemBuilder: (context, index) {
+                      final prizeText = prizeLevels[index];
+                      final isActive = levelsCount - 1 - index == currentIndex;
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: isActive ? Colors.amber[700] : Colors.blue[800],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isActive ? Colors.black : Colors.transparent,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Text(
+                          '${levelsCount - index}. $prizeText',
+                          style: TextStyle(
+                            color: isActive ? Colors.black : Colors.white,
+                            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
-
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue[900],
         child: Padding(

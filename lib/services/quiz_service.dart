@@ -1,22 +1,10 @@
 class QuizService {
-  static String finalQuizUrl = ''; // Shared final URL
-  static const String _baseUrl = 'https://opentdb.com/api.php?';
+  static String finalQuizUrl = '';
+  static bool soundEnabled = false;
+  static bool vibrationEnabled = false;
 
-  static String buildApiUrl({
-    required int amount,
-    int? category,
-    String? difficulty,
-  }) {
-    final buffer = StringBuffer('${_baseUrl}amount=$amount');
-
-    if (category != null) buffer.write('&category=$category');
-    if (difficulty != null) buffer.write('&difficulty=$difficulty');
-
-    return buffer.toString();
-  }
-
-  static final Map<String, int> categories = {
-    'Any Category': 8,
+  static const Map<String, int> categories = {
+    'Any Category': 0,
     'General Knowledge': 9,
     'Entertainment: Books': 10,
     'Entertainment: Film': 11,
@@ -42,4 +30,9 @@ class QuizService {
     'Entertainment: Japanese Anime & Manga': 31,
     'Entertainment: Cartoon & Animations': 32,
   };
+
+  static String buildApiUrl({required int amount, required int category, required String difficulty}) {
+    final categoryPart = category > 0 ? '&category=$category' : '';
+    return 'https://opentdb.com/api.php?amount=$amount$categoryPart&difficulty=$difficulty&type=multiple';
+  }
 }
