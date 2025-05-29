@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../Languages/app_localizations.dart';
 
-class ResultsScreen extends StatelessWidget {
+class ResultatPage extends StatelessWidget {
   final int score;
   final int total;
   final List<dynamic> questions;
   final List<String?> userAnswers;
 
-  const ResultsScreen({
+  const ResultatPage({
     super.key,
     required this.score,
     required this.total,

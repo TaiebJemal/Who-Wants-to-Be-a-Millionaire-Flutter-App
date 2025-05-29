@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Languages/app_localizations.dart';
-import 'settings.provider.dart';
+import 'parametres.provider.dart';
 
-class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
+class ParametrePage extends ConsumerWidget {
+  const ParametrePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

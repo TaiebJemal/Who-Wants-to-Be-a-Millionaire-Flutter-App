@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../Languages/app_localizations.dart';
 
-class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+class AproposPage extends StatelessWidget {
+  const AproposPage({super.key});
 
   @override
   Widget build(BuildContext context) {

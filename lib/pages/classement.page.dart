@@ -4,14 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../Languages/app_localizations.dart';
 
-class RankingPage extends ConsumerStatefulWidget {
-  const RankingPage({super.key});
+class ClassementPage extends ConsumerStatefulWidget {
+  const ClassementPage({super.key});
 
   @override
-  ConsumerState<RankingPage> createState() => _RankingScreenState();
+  ConsumerState<ClassementPage> createState() => _RankingScreenState();
 }
 
-class _RankingScreenState extends ConsumerState<RankingPage> {
+class _RankingScreenState extends ConsumerState<ClassementPage> {
   Map<String, dynamic> _scores = {};
   bool _isLoading = true;
 

@@ -6,12 +6,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'Languages/app_localizations.dart';
-import 'pages/settings.quiz.page.dart';
-import 'pages/settings.app.page.dart';
-import 'pages/ranking.page.dart';
-import 'pages/about.page.dart';
-import 'pages/settings.provider.dart';
-import 'pages/loading.page.dart';
+import 'pages/paramtres.quiz.page.dart';
+import 'pages/parametres.app.page.dart';
+import 'pages/classement.page.dart';
+import 'pages/apropos.page.dart';
+import 'pages/parametres.provider.dart';
+import 'pages/chargement.page.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -34,13 +34,13 @@ Future<void> main() async {
     },
   );
 
-  await scheduleDailyNotification();
+  await programerNotificationJornaliee();
 
   runApp(
     const ProviderScope(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LoadingPage(),
+        home: ChargementPage(),
       ),
     ),
   );
@@ -108,9 +108,9 @@ class MyApp extends ConsumerWidget {
       ),
       home: const MyHomePage(),
       routes: {
-        '/quiz_parameters': (context) => const QuizParametersScreen(),
-        '/ranking': (context) => const RankingPage(),
-        '/about': (context) => const AboutPage(),
+        '/quiz_parameters': (context) => const QuizParametersPage(),
+        '/ranking': (context) => const ClassementPage(),
+        '/about': (context) => const AproposPage(),
       },
     );
   }
@@ -141,7 +141,7 @@ class MyHomePage extends ConsumerWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(builder: (context) => const ParametrePage()),
               );
             },
           ),
@@ -307,7 +307,7 @@ class _AnimatedWelcomeMessageState extends State<AnimatedWelcomeMessage>
   }
 }
 
-Future<void> scheduleDailyNotification() async {
+Future<void> programerNotificationJornaliee() async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
   AndroidNotificationDetails(
     'daily_reminder_channel',

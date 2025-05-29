@@ -4,18 +4,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Languages/app_localizations.dart';
 import 'quiz.page.dart';
-import 'settings.provider.dart';
+import 'parametres.provider.dart';
 import 'dart:ui';
 import 'package:just_audio/just_audio.dart';
 
-class QuizParametersScreen extends ConsumerStatefulWidget {
-  const QuizParametersScreen({super.key});
+class QuizParametersPage extends ConsumerStatefulWidget {
+  const QuizParametersPage({super.key});
 
   @override
-  ConsumerState<QuizParametersScreen> createState() => _QuizParametersScreenState();
+  ConsumerState<QuizParametersPage> createState() => _QuizParametersScreenState();
 }
 
-class _QuizParametersScreenState extends ConsumerState<QuizParametersScreen> {
+class _QuizParametersScreenState extends ConsumerState<QuizParametersPage> {
   List<String> _categories = [];
   final List<String> _difficulties = ['Easy', 'Medium', 'Hard'];
   final List<int> _questionNumbers = [5, 10, 15, 20];

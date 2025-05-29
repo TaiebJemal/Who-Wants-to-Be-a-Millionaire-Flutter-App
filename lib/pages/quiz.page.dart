@@ -7,9 +7,9 @@ import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 import 'package:vibration/vibration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'results_screen.dart';
+import 'resultat.pages.dart';
 import '../Languages/app_localizations.dart';
-import 'settings.provider.dart';
+import 'parametres.provider.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   final String category;
@@ -242,7 +242,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultsScreen(
+          builder: (context) => ResultatPage(
             score: _score,
             total: _questions.length,
             questions: _questions,

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../main.dart'; // Import the main app file
 
-class LoadingPage extends StatefulWidget {
-  const LoadingPage({super.key});
+class ChargementPage extends StatefulWidget {
+  const ChargementPage({super.key});
 
   @override
-  State<LoadingPage> createState() => _LoadingPageState(); // Fixed state creation
+  State<ChargementPage> createState() => _LoadingPageState(); // Fixed state creation
 }
 
-class _LoadingPageState extends State<LoadingPage> {
+class _LoadingPageState extends State<ChargementPage> {
   @override
   void initState() {
     super.initState();
